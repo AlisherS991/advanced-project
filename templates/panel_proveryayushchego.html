@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Moderator Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-secondary mb-4">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">🛡️ Mesto dlya teh kto reshaet, chto pokazat Akimu</span>
+            <div class="text-white">Ty tut: <strong>{{ username }}</strong> | <a href="/vylazi_otsyuda"
+                    class="btn btn-sm btn-outline-light ms-2">Vyiti</a></div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h3 class="mb-4">Spisok bed, kotorye nado proverit (Zhdem tvoego slova)</h3>
+        <table class="table table-bordered bg-white shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Dokazatelstvo (Foto)</th>
+                    <th>Chto slomalsya?</th>
+                    <th>Chto dumal robot</th>
+                    <th>Tvoy prigovor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in complaints %}
+                <tr>
+                    <td>{{ row['nomer_id'] }}</td>
+                    <td><img src="/static/uploads/{{ row['nazvanie_fotki'] }}" width="120" class="img-thumbnail"></td>
+                    <td>{{ row['tekst_zhaloby'] }}</td>
+                    <td><strong class="text-primary">{{ row['predpolozhenie_robota'] }}</strong></td>
+                    <td>
+                        <form action="/deystvie_moderatora/{{ row['nomer_id'] }}" method="POST" class="d-grid gap-2">
+                            <button type="submit" name="mod_action" value="Approved" class="btn btn-success btn-sm">✅
+                                Propushit k Akimu</button>
+                            <button type="submit" name="mod_action" value="Rejected" class="btn btn-danger btn-sm">❌ V
+                                musorku (Spam)</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-4">Bedy konchilis, otdyhay!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

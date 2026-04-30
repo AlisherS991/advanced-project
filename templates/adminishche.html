@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Smart City</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-primary mb-4">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">Admin-панель (Glavnyi Nadziratel)</span>
+            <div class="text-white">
+                Smotryashiy: <strong>{{ username }}</strong> |
+                <a href="/vylazi_otsyuda" class="btn btn-sm btn-outline-light ms-2">Vyhod</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h3 class="mb-4">Spisok bed i problem goroda</h3>
+
+        <table class="table table-bordered table-striped bg-white shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Kartinka</th>
+                    <th>Chto za beda?</th>
+                    <th>Mysli robota</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in complaints %}
+                <tr>
+                    <td class="align-middle">{{ row['nomer_id'] }}</td>
+                    <td class="align-middle">
+                        <img src="/static/uploads/{{ row['nazvanie_fotki'] }}" width="150" alt="Issue Photo"
+                            class="img-thumbnail">
+                    </td>
+                    <td class="align-middle">{{ row['tekst_zhaloby'] }}</td>
+                    <td class="align-middle"><strong class="text-success">{{ row['predpolozhenie_robota'] }}</strong>
+                    </td>
+                    <td class="align-middle">
+                        <form action="/obnovit_status/{{ row['nomer_id'] }}" method="POST" class="m-0">
+                            <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <option value="V_Ozhidanii" {% if row['status_proverki_moderom']=='V_Ozhidanii'
+                                    %}selected{% endif %}>🟡 Zhdem</option>
+                                <option value="Approved" {% if row['status_proverki_moderom']=='Approved' %}selected{%
+                                    endif %}>🔵 Odobreno</option>
+                                <option value="Rejected" {% if row['status_proverki_moderom']=='Rejected' %}selected{%
+                                    endif %}>🟢 Otkloneno</option>
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-4">Bedy poka netu, otdyhay.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>

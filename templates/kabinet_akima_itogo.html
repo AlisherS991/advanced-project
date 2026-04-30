@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Akimat Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">🏛️ Glavnyi kabinet Akima (Vse pod kontrolem)</span>
+            <div class="text-white">Gospodin Akim: <strong>{{ username }}</strong> | <a href="/vylazi_otsyuda"
+                    class="btn btn-sm btn-outline-light ms-2">Vyhod</a></div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h3 class="mb-4">Bedy goroda, kotorye nado ispravit (Lichno dlya vas)</h3>
+        <table class="table table-bordered bg-white shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nomer</th>
+                    <th>Kartinka</th>
+                    <th>Chto sluchilos i chto AI dumayet</th>
+                    <th>Naskolko vse ploho</th>
+                    <th>Chto reshaem?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in complaints %}
+                <tr>
+                    <td>{{ row['nomer_id'] }}</td>
+                    <td><img src="/static/uploads/{{ row['nazvanie_fotki'] }}" width="120" class="img-thumbnail"></td>
+                    <td>
+                        <p class="mb-1"><strong>Chto tut:</strong> {{ row['tekst_zhaloby'] }}</p>
+                        <small class="text-success">{{ row['predpolozhenie_robota'] }}</small>
+                    </td>
+                    <td>
+                        <form action="/reshenie_akima/{{ row['nomer_id'] }}" method="POST"
+                            id="form-{{ row['nomer_id'] }}">
+                            <select name="urgency" class="form-select form-select-sm mb-2"
+                                onchange="document.getElementById('form-{{ row['nomer_id'] }}').submit()">
+                                <option value="Ne_Naznacheno" {% if row['uroven_srochnosti_ot_akima']=='Ne_Naznacheno'
+                                    %}selected{% endif %}>⚪ Poka ne znayu</option>
+                                <option value="Terpimo" {% if row['uroven_srochnosti_ot_akima']=='Terpimo' %}selected{%
+                                    endif %}>🟡 Terpimo</option>
+                                <option value="Gorit" {% if row['uroven_srochnosti_ot_akima']=='Gorit' %}selected{%
+                                    endif %}>🔴 GORIT!!!</option>
+                            </select>
+                    </td>
+                    <td>
+                        <select name="decision" class="form-select form-select-sm"
+                            onchange="document.getElementById('form-{{ row['nomer_id'] }}').submit()">
+                            <option value="Zhdem" {% if row['itogovoe_reshenie_akima']=='Zhdem' %}selected{% endif %}>⏳
+                                Zhdem...</option>
+                            <option value="Sdelayem" {% if row['itogovoe_reshenie_akima']=='Sdelayem' %}selected{% endif
+                                %}>🛠️ Sdelayem!</option>
+                            <option value="Deneg_Net" {% if row['itogovoe_reshenie_akima']=="Deneg_Net" %}selected{%
+                                endif %}>🚫 Deneg net</option>
+                            <option value="Vse_Gotovo" {% if row['itogovoe_reshenie_akima']=='Vse_Gotovo' %}selected{%
+                                endif %}>✅ Vse, sdelali!</option>
+                        </select>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-4">Poka vse tiho, bed ne vidno.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
